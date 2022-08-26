@@ -1,46 +1,19 @@
 import java.text.NumberFormat;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 
 public class Amortization {
     static final Scanner scanner = new Scanner(System.in);
-
+    static int principal = 0;
+    static double rateInput = 0D;
+    static int yearsToPay = 0;
     public static void main(String[] args) {
         System.out.println("Welcome to Amortization Calculator!");
 
-        boolean enteredPrincipal = false;
-        int principal = 0;
-        do {
-            if ((principal < 1000 || principal > 1_000_000) && enteredPrincipal) {
-                System.out.println("Principal should be between 1k - 1M");
-            }
-            System.out.print("How much do you want to borrow? (1k - 1M): ");
-            principal = scanner.nextInt();
-            enteredPrincipal = true;
-        } while (principal < 1000 || principal > 1_000_000);
-
-
-        boolean enteredRate = false;
-        double rateInput = 0D;
-        do {
-            if ((rateInput <= 0 || rateInput > 30) && enteredRate) {
-                System.out.println("Interest percentage should be greater than 0 and less than or equal to 30");
-            }
-            System.out.print("Percentage of interest: ");
-            rateInput = scanner.nextDouble();
-            enteredRate = true;
-        } while (rateInput <= 0 || rateInput > 30);
-
-        boolean enteredYearsToPay = false;
-        int yearsToPay = 0;
-        do {
-            if ((yearsToPay <= 0 || yearsToPay > 30) && enteredYearsToPay) {
-                System.out.println("Cannot be less than a year and more than 30");
-            }
-            System.out.print("How many years do you plan to pay?: ");
-            yearsToPay = scanner.nextByte();
-            enteredYearsToPay = true;
-
-        } while (yearsToPay <= 0 || yearsToPay > 30);
+        askForPrincipal();
+        askForInterestRate();
+        askForYearsToPay();
 
 
         int yearsToMonths = yearsToPay * 12;
@@ -76,5 +49,69 @@ public class Amortization {
             }
         }
 
+    }
+
+    private static void askForYearsToPay() {
+        boolean enteredYearsToPay = false;
+
+        do {
+            if ((yearsToPay <= 0 || yearsToPay > 30) && enteredYearsToPay) {
+                System.out.println("Cannot be less than a year and more than 30");
+            }
+            System.out.print("How many years do you plan to pay?: ");
+            handleError(() -> yearsToPay = scanner.nextByte(),() -> {
+                askForYearsToPay();
+                return true;
+            });
+            enteredYearsToPay = true;
+
+        } while (yearsToPay <= 0 || yearsToPay > 30);
+    }
+
+    private static void askForInterestRate() {
+        boolean enteredRate = false;
+        do {
+            if ((rateInput <= 0 || rateInput > 30) && enteredRate) {
+                System.out.println("Interest percentage should be greater than 0 and less than or equal to 30");
+            }
+            System.out.print("Percentage of interest: ");
+
+            handleError(() -> rateInput = scanner.nextDouble(),() -> {
+                askForInterestRate();
+                return true;
+            });
+
+            enteredRate = true;
+        } while (rateInput <= 0 || rateInput > 30);
+    }
+
+    private static void askForPrincipal() {
+        boolean enteredPrincipal = false;
+        principal = 0;
+        do {
+            if ((principal < 1000 || principal > 1_000_000) && enteredPrincipal) {
+                System.out.println("Principal should be between 1k - 1M");
+            }
+            System.out.print("How much do you want to borrow? (1k - 1M): ");
+            handleError(() -> principal = scanner.nextInt(),() -> {
+                askForPrincipal();
+                return true;
+            });
+            enteredPrincipal = true;
+        } while (principal < 1000 || principal > 1_000_000);
+    }
+
+    public static void handleError(Callable f1, Callable f2){
+        try {
+            f1.call();
+        } catch (Exception e) {
+            try {
+                scanner.nextLine();
+                System.out.println("Invalid Input!");
+                f2.call();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 }
