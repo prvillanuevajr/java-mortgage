@@ -8,6 +8,7 @@ public class Amortization {
     static int principal = 0;
     static double rateInput = 0D;
     static int yearsToPay = 0;
+
     public static void main(String[] args) {
         System.out.println("Welcome to Amortization Calculator!");
 
@@ -59,10 +60,7 @@ public class Amortization {
                 System.out.println("Cannot be less than a year and more than 30");
             }
             System.out.print("How many years do you plan to pay?: ");
-            handleError(() -> yearsToPay = scanner.nextByte(),() -> {
-                askForYearsToPay();
-                return true;
-            });
+            handleError(() -> yearsToPay = scanner.nextByte(), Amortization::askForYearsToPay);
             enteredYearsToPay = true;
 
         } while (yearsToPay <= 0 || yearsToPay > 30);
@@ -76,10 +74,7 @@ public class Amortization {
             }
             System.out.print("Percentage of interest: ");
 
-            handleError(() -> rateInput = scanner.nextDouble(),() -> {
-                askForInterestRate();
-                return true;
-            });
+            handleError(() -> rateInput = scanner.nextDouble(), Amortization::askForInterestRate);
 
             enteredRate = true;
         } while (rateInput <= 0 || rateInput > 30);
@@ -93,25 +88,18 @@ public class Amortization {
                 System.out.println("Principal should be between 1k - 1M");
             }
             System.out.print("How much do you want to borrow? (1k - 1M): ");
-            handleError(() -> principal = scanner.nextInt(),() -> {
-                askForPrincipal();
-                return true;
-            });
+            handleError(() -> principal = scanner.nextInt(), Amortization::askForPrincipal);
             enteredPrincipal = true;
         } while (principal < 1000 || principal > 1_000_000);
     }
 
-    public static void handleError(Callable f1, Callable f2){
+    public static void handleError(Runnable f1, Runnable f2) {
         try {
-            f1.call();
-        } catch (Exception e) {
-            try {
-                scanner.nextLine();
-                System.out.println("Invalid Input!");
-                f2.call();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+            f1.run();
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("Invalid Input!");
+            f2.run();
         }
     }
 }
