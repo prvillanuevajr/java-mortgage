@@ -25,6 +25,8 @@ public class Amortization {
         double totalPayment = amortization * yearsToMonths;
         System.out.println(String.format("%-25s%20s", "Principal:", currency.format(principal)));
         System.out.println(String.format("%-25s%20s", "Monthly Amortization:", currency.format(amortization)));
+        System.out.println(String.format("%-25s%20s", "Total Payment:", currency.format(totalPayment)));
+        System.out.println(String.format("%-25s%20s", "Total Interest:", currency.format(totalPayment - principal)));
 
 
 
