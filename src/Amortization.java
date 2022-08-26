@@ -23,24 +23,27 @@ public class Amortization {
         NumberFormat currency = NumberFormat.getCurrencyInstance();
 
         double totalPayment = amortization * yearsToMonths;
-        System.out.println(String.format("%-25s%20s", "Principal:", currency.format(principal)));
-        System.out.println(String.format("%-25s%20s", "Monthly Amortization:", currency.format(amortization)));
+        System.out.printf("%-25s%20s%n", "Principal:", currency.format(principal));
+        System.out.printf("%-25s%20s%n", "Monthly Amortization:", currency.format(amortization));
 
 
-        System.out.println(String.format("%-15s","Breakdown").replace(' ','.'));
-        System.out.println(String.format("%3s%15s%15s%15s%15s"," ","Balance","Principal","Interest","End Balance"));
-        System.out.println(String.format("%63s","").replace(' ','_'));
+        System.out.println(String.format("%-15s", "Breakdown").replace(' ', '.'));
+        System.out.printf("%3s%15s%15s%15s%15s%n", " ", "Balance", "Principal", "Interest", "End Balance");
 
         double beginningBal = principal;
-        for (int i = 0; i < yearsToMonths; i++) {
-            double monthlyRate = amortization-(beginningBal*rate);
-            double endingBalance = beginningBal - monthlyRate;
-            String beginningBalDisplay = currency.format(beginningBal);
-            String amortizationDisplay = currency.format(monthlyRate);
-            String monthlyInterestDisplay = currency.format(beginningBal*rate);
-            String endingBalanceDisplay = currency.format(endingBalance);
-            System.out.println(String.format("%3s%15s%15s%15s%15s",i+1,beginningBalDisplay,amortizationDisplay,monthlyInterestDisplay,endingBalanceDisplay));
-            beginningBal = endingBalance;
+        for (int i = 0; i < yearsToPay; i++) {
+
+            System.out.println(String.format("%53s%10s", "", "Year " + (i + 1)).replace(' ', '_'));
+            for (int j = 0; j < 12; j++) {
+                double monthlyRate = amortization - (beginningBal * rate);
+                double endingBalance = beginningBal - monthlyRate;
+                String beginningBalDisplay = currency.format(beginningBal);
+                String amortizationDisplay = currency.format(monthlyRate);
+                String monthlyInterestDisplay = currency.format(beginningBal * rate);
+                String endingBalanceDisplay = currency.format(endingBalance);
+                System.out.println(String.format("%3s%15s%15s%15s%15s", j + 1, beginningBalDisplay, amortizationDisplay, monthlyInterestDisplay, endingBalanceDisplay));
+                beginningBal = endingBalance;
+            }
         }
 
     }
