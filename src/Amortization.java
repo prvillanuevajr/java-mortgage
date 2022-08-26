@@ -6,12 +6,42 @@ public class Amortization {
 
     public static void main(String[] args) {
         System.out.println("Welcome to Amortization Calculator!");
-        System.out.print("How much do you want to borrow?: ");
-        int principal = scanner.nextInt();
-        System.out.print("Percentage of interest: ");
-        double rateInput = scanner.nextDouble();
-        System.out.print("How many years do you plan to pay?: ");
-        int yearsToPay = scanner.nextByte();
+
+        boolean enteredPrincipal = false;
+        int principal = 0;
+        do {
+            if ((principal < 1000 || principal > 1_000_000) && enteredPrincipal) {
+                System.out.println("Principal should be between 1k - 1M");
+            }
+            System.out.print("How much do you want to borrow? (1k - 1M): ");
+            principal = scanner.nextInt();
+            enteredPrincipal = true;
+        } while (principal < 1000 || principal > 1_000_000);
+
+
+        boolean enteredRate = false;
+        double rateInput = 0D;
+        do {
+            if ((rateInput <= 0 || rateInput > 30) && enteredRate) {
+                System.out.println("Interest percentage should be greater than 0 and less than or equal to 30");
+            }
+            System.out.print("Percentage of interest: ");
+            rateInput = scanner.nextDouble();
+            enteredRate = true;
+        } while (rateInput <= 0 || rateInput > 30);
+
+        boolean enteredYearsToPay = false;
+        int yearsToPay = 0;
+        do {
+            if ((yearsToPay <= 0 || yearsToPay > 30) && enteredYearsToPay) {
+                System.out.println("Cannot be less than a year and more than 30");
+            }
+            System.out.print("How many years do you plan to pay?: ");
+            yearsToPay = scanner.nextByte();
+            enteredYearsToPay = true;
+
+        } while (yearsToPay <= 0 || yearsToPay > 30);
+
 
         int yearsToMonths = yearsToPay * 12;
 
