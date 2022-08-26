@@ -25,10 +25,23 @@ public class Amortization {
         double totalPayment = amortization * yearsToMonths;
         System.out.println(String.format("%-25s%20s", "Principal:", currency.format(principal)));
         System.out.println(String.format("%-25s%20s", "Monthly Amortization:", currency.format(amortization)));
-        System.out.println(String.format("%-25s%20s", "Total Payment:", currency.format(totalPayment)));
-        System.out.println(String.format("%-25s%20s", "Total Interest:", currency.format(totalPayment - principal)));
 
 
+        System.out.println(String.format("%-15s","Breakdown").replace(' ','.'));
+        System.out.println(String.format("%3s%15s%15s%15s%15s"," ","Balance","Principal","Interest","End Balance"));
+        System.out.println(String.format("%63s","").replace(' ','_'));
+
+        double beginningBal = principal;
+        for (int i = 0; i < yearsToMonths; i++) {
+            double monthlyRate = amortization-(beginningBal*rate);
+            double endingBalance = beginningBal - monthlyRate;
+            String beginningBalDisplay = currency.format(beginningBal);
+            String amortizationDisplay = currency.format(monthlyRate);
+            String monthlyInterestDisplay = currency.format(beginningBal*rate);
+            String endingBalanceDisplay = currency.format(endingBalance);
+            System.out.println(String.format("%3s%15s%15s%15s%15s",i+1,beginningBalDisplay,amortizationDisplay,monthlyInterestDisplay,endingBalanceDisplay));
+            beginningBal = endingBalance;
+        }
 
     }
 }
